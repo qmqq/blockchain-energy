@@ -1,0 +1,234 @@
+pragma solidity ^0.4.21;
+
+library IterableMapping{
+
+    struct itmap
+    {
+        mapping(uint => IndexValue) data;
+        KeyFlag[] keys;
+        uint size;
+    }
+    struct IndexValue { uint keyIndex; uint value; }
+    struct KeyFlag { uint key; bool deleted; }
+    function insert(itmap storage self, uint key, uint value) internal returns (bool replaced)
+    {
+        uint keyIndex = self.data[key].keyIndex;
+        self.data[key].value = value;
+        if (keyIndex > 0)
+            return true;
+        else
+        {
+            keyIndex = self.keys.length++;
+            self.data[key].keyIndex = keyIndex + 1;
+            self.keys[keyIndex].key = key;
+            self.size++;
+            return false;
+        }
+    }
+    function remove(itmap storage self, uint key) internal returns (bool success)
+    {
+        uint keyIndex = self.data[key].keyIndex;
+        if (keyIndex == 0)
+            return false;
+        delete self.data[key];
+        self.keys[keyIndex - 1].deleted = true;
+        self.size --;
+    }
+    function contains(itmap storage self, uint key) internal view returns (bool)
+    {
+        return self.data[key].keyIndex > 0;
+    }
+    function iterate_start(itmap storage self) internal view returns (uint keyIndex)
+    {
+        return iterate_next(self, uint(-1));
+    }
+    function iterate_valid(itmap storage self, uint keyIndex) internal view returns (bool)
+    {
+        return keyIndex < self.keys.length;
+    }
+    function iterate_next(itmap storage self, uint keyIndex) internal view returns (uint r_keyIndex)
+    {
+        keyIndex++;
+        while (keyIndex < self.keys.length && self.keys[keyIndex].deleted)
+            keyIndex++;
+        return keyIndex;
+    }
+    function iterate_get(itmap storage self, uint keyIndex) internal view returns (uint key, uint value)
+    {
+        key = self.keys[keyIndex].key;
+        value = self.data[key].value;
+    }
+}
+
+contract Soalrcoin {
+    address internal ceoAddress=0x00;
+    address internal cfoAddress=0x00;
+    address internal cooAddress=0x00;
+    //充值账户
+    address public minter = msg.sender;
+    address public owner = msg.sender;
+    mapping (address => uint) public balances;
+    event Sent(address from, address to, uint amount);
+    //充值方法
+    function recharge(address receiver, uint amount) public {
+        if (msg.sender != minter) return;
+        balances[receiver] += amount;
+    }
+    //转账方法
+    function send(address receiver, address sender,uint amount) public returns(bool){
+        if (balances[sender] < amount) return false;
+        balances[sender] -= amount;
+        balances[receiver] += amount;
+        return true;
+        emit Sent(msg.sender, receiver, amount);
+    }
+    
+    
+    bool public paused = false;
+    //权限限制器
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+    _;
+    }
+    modifier whenNotPaused() {
+        require(!paused);
+    _;
+    }
+    modifier whenPaused {
+        require(paused);
+        _;
+    }
+    //管理员投票表决
+    modifier onlyCLevel() {
+        require(
+            msg.sender == cooAddress||
+            msg.sender == ceoAddress||
+            msg.sender == cfoAddress
+        );
+        _;
+    }
+    //禁用合约调用
+    function pause() external onlyCLevel whenNotPaused {    
+        paused = true;
+    }
+    //解除合约禁用
+    function unpause() public onlyCLevel whenPaused {       
+        paused = false;
+    }
+}
+
+contract Trade is Soalrcoin{
+    //电力商品的归属用户索引
+    mapping(uint => address) public itemIndexToOwner;
+    //原生电能的归属用户索引
+    mapping(uint => address) public originIndexToOwner;
+    //售卖
+    event Sale(uint item_id, uint u_price,address sender, bool result);
+    //购买
+    event Buy(uint item_id, address sender, bool result);
+    //创建商品
+    event CreateItem(uint newItemId, uint u_price,uint quant,uint status, address owner);
+    //创造电能
+    event CreateOrigin(uint originSolarId, uint quant,uint status,uint time,address owner);
+
+    //原生电力
+    struct newSolar{
+        uint quant;
+        uint time;
+        address creator;
+    }
+    
+    //电力商品化
+    struct Item {
+        uint u_price;
+        //0原生，1商品化，2在售，3交易中，4交易成功（电力消费）
+        uint status;    
+        address seller;
+        address buyer;
+        //交易电量
+        uint quant;  
+        uint time;
+    }
+    
+    //当前商店中的在售电能
+    Item[] public elec;
+    newSolar[] public ns;
+
+    //生产电能方法
+    function createnewSolar(uint quant,uint time,address creator) public returns (bool success){
+        success = false;
+        uint status = 0;
+        newSolar memory solar = newSolar(
+            uint(quant),
+            uint(time),
+            address(creator)
+        );
+        uint originSolarId=ns.push(solar)-1;
+        originIndexToOwner[originSolarId] = creator;
+        success = true;
+        emit CreateOrigin(originSolarId, quant, status, time, creator);
+    }
+
+    //创建电能商品，调用者以大小为唯一参数创建，自动补充id号
+    function createItem(uint quant,uint time,address seller) public returns (uint newItemId,bool success){
+        success = false;
+        uint status = 1;
+        uint u_price=0;
+        address buyer=0x00;
+        Item memory item = Item(
+            uint(u_price),
+            uint(status),
+            address(seller),
+            address(buyer),
+            uint(quant),
+            uint(time)
+        );
+        if(quant>0){
+            //将物品添加到数组
+            newItemId = elec.push(item) - 1;
+            itemIndexToOwner[newItemId] = owner;
+            success = true;
+        }
+        emit CreateItem(newItemId, u_price, quant,status, seller);
+    }
+    
+    //挂售方法，参数为商品块的id号和单价
+    function sale(uint item_id,uint u_price,address seller) public returns (bool success){
+        success = false;
+        //判断所有者以及物品状态
+        if (seller == elec[item_id].seller && elec[item_id].status == 1) {
+            elec[item_id].u_price = u_price;
+            elec[item_id].status = 2;
+            success = true;
+        }
+        emit Sale(item_id, u_price, seller, success);
+    }
+
+    //购买方法,不支持拆分购买,以生成的商品id号为标识购买
+    function buy(uint item_id,address buyer) public payable returns (bool success){
+        success = false;
+        uint tot_price = elec[item_id].quant*elec[item_id].u_price;
+        address seller = elec[item_id].seller;
+        //物品存在且物品状态可购买，用户给的钱够，那么转钱
+        if (elec[item_id].status == 2 && balances[buyer] >= tot_price) {
+            if(send(seller, buyer, tot_price))
+            {
+                elec[item_id].buyer=buyer;
+                elec[item_id].status = 4;
+                success = true;
+            }
+        }
+        emit Buy(item_id, buyer, success);
+    }
+
+    //根据交易id获取在售交易信息
+    function getSaleInfo(uint item_id) public view 
+    returns (uint u_price, uint status, address seller ,address buyer,uint quant){
+        quant =elec[item_id].quant;
+        u_price = elec[item_id].u_price;
+        status = elec[item_id].status;
+        seller = elec[item_id].seller;
+        buyer=elec[item_id].buyer;
+    }
+    
+}

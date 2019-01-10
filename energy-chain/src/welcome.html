@@ -1,0 +1,156 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-admin1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="icon" type="image/x-icon" href="public/images/icon16.ico">
+        <link rel="stylesheet" href="public/layui/css/layui.css">
+        <link rel="stylesheet" href="public/css/admin.css">
+        <link rel="stylesheet" href="public/css/font.css">
+        <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    </head>
+    <body>
+    <div class="x-body layui-anim layui-anim-up">
+        <blockquote class="layui-elem-quote">欢迎您：
+            <span class="x-red" id="address">test</span>！当前时间: <span id="current-time"></span> </blockquote>
+        <fieldset class="layui-elem-field">
+            <legend>数据统计</legend>
+            <div class="layui-field-box">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div class="layui-carousel x-admin-carousel x-admin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 90px;">
+                                <div carousel-item="">
+                                    <ul class="layui-row layui-col-space10 layui-this">
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>可售电量数</h3>
+                                                <p>
+                                                    <cite id="commerCount">-1</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>在售电量数</h3>
+                                                <p>
+                                                    <cite id="saleCount">-1</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>买入电量数</h3>
+                                                <p>
+                                                    <cite id="buyCount">-1</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>卖出电量数</h3>
+                                                <p>
+                                                    <cite id="finishCount">-1</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>可用电量</h3>
+                                                <p>
+                                                    <cite id="amount">-1</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>交易余额</h3>
+                                                <p>
+                                                    <cite id="tol_price">-1</cite></p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>新闻公告</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" lay-skin="line">
+                    <tbody>
+                    <tr>
+                        <td >
+                            <a class="x-a" href="/" target="_blank">基于区块链的杭电云链实验室1.0上线了！</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <a class="x-a" href="https://wallstreetcn.com/news/global?from=navbar" target="_blank">中产阶级全面下流化 美国梦最终只属于少数人</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <a class="x-a" href="https://wallstreetcn.com/news/global?from=navbar" target="_blank">BAT霸市、独角兽两难、小公司将死：人工智能如何打破僵局？</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <a class="x-a" href="https://wallstreetcn.com/news/global?from=navbar" target="_blank">“承诺取消” Jack Ma、“丑闻未了”刘强东|热门人物盘点</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <a class="x-a" href="https://wallstreetcn.com/news/global?from=navbar" target="_blank">香港段正式通车！广深港高铁带来了哪些投资机会？</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <a class="x-a" href="https://wallstreetcn.com/news/global?from=navbar" target="_blank">美国楼市也不行了？八年来从未有这么多卖家降价售房</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>系统信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <tbody>
+                    <tr>
+                        <th>目前版本</th>
+                        <td>1.0.0</td></tr>
+                    <tr>
+                        <th>服务器地址</th>
+                        <td>edu.hdu.cn</td></tr>
+                    <tr>
+                        <th>操作系统</th>
+                        <td>UBUNTU16.04</td></tr>
+                    <tr>
+                        <th>运行环境</th>
+                        <td>Apache/2.4.23 (Win32) OpenSSL/1.0.2j mod_fcgid/2.3.9</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>开发团队</legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <tbody>
+                    <tr>
+                        <th>版权所有</th>
+                        <td>HDU-CHAINLAB</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+        <!--<blockquote class="layui-elem-quote layui-quote-nm">感谢layui,百度Echarts,jquery,本系统由x-admin提供技术支持。</blockquote>-->
+    </div>
+    <script type="text/javascript" src="public/js/common.js" ></script>
+    </body>
+    </html>

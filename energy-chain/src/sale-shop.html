@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>在售列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="icon" type="image/x-icon" href="public/images/icon16.ico">
+    <link rel="stylesheet" href="public/layui/css/layui.css">
+    <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/font.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">电力商店</a>
+        <a>
+          <cite>在售电力列表</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon layui-icon-refresh-3" style="line-height:30px"></i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+            <input class="layui-input" placeholder="开始日" name="start" id="start">
+            <input class="layui-input" placeholder="截止日" name="end" id="end">
+            <div class="layui-input-inline">
+                <select name="contrller">
+                    <option>交易状态</option>
+                    <option>在售</option>
+                    <option>交易中...</option>
+                    <option>交易完成</option>
+                </select>
+            </div>
+            <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+    </div>
+    <xblock>
+        <button class="layui-btn" id="recharge"><i class="layui-icon"></i>钱包充值</button>
+        <span style="line-height:40px; padding-left: 20px;">可用交易余额：<span style="color: #1AA093; font-size:16px;" id="price"></span></span>
+    </xblock>
+    <table class="layui-hide" id="test" lay-filter="demo"></table>
+
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="buy">购买</a>
+    </script>
+
+    <script id="createTime" type="text/html">
+        {{createTime(d.createTime)}}
+    </script>
+    <script id="setStatus" type="text/html">
+        {{setStatus(d.status)}}
+    </script>
+
+</div>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="public/js/public-admin.js" ></script>
+<script type="text/javascript" src="public/js/common.js" ></script>
+<script src="public/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+    function setStatus(v) {
+        if (v == 2)
+            return '在售';
+        else if(v == 1)
+            return '可售';
+        else
+            return null;
+    }
+
+    /**13位时间戳转换成 年月日 上午 时间  2018-05-23 10:41:08 */
+    function createTime(v){
+        return new Date(parseInt(v)).toLocaleString()
+    }
+    /**重写toLocaleString方法*/
+    Date.prototype.toLocaleString = function() {
+        var y = this.getFullYear();
+        var m = this.getMonth()+1;
+        m = m<10?'0'+m:m;
+        var d = this.getDate();
+        d = d<10?("0"+d):d;
+        var h = this.getHours();
+        h = h<10?("0"+h):h;
+        var M = this.getMinutes();
+        M = M<10?("0"+M):M;
+        var S=this.getSeconds();
+        S=S<10?("0"+S):S;
+        return y+"-"+m+"-"+d+" "+h+":"+M+":"+S;
+    };
+</script>
+</body>
+
+</html>

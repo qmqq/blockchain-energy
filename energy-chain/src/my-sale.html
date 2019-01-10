@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>在售电量</title>
+
+    <link rel="stylesheet" href="public/layui/css/layui.css">
+    <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/font.css">
+    <link rel="icon" type="image/x-icon" href="public/images/icon16.ico">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">电力管理</a>
+        <a>
+          <cite>出售电量</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon layui-icon-refresh-3" style="line-height:30px"></i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+            <input class="layui-input" placeholder="开始日" name="start" id="start">
+            <input class="layui-input" placeholder="截止日" name="end" id="end">
+            <div class="layui-input-inline">
+                <select name="contrller">
+                    <option>交易状态</option>
+                    <option>在售</option>
+                    <option>交易中...</option>
+                    <option>交易完成</option>
+                </select>
+            </div>
+            <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+    </div>
+    <xblock>
+        <button class="layui-btn" onclick="x_admin_show('发起售电','./sale-add.html',600,400)"><i class="layui-icon"></i>发起售电</button>
+        <span style="line-height:40px; padding-left: 20px;">可售电量：<span style="color: #1AA093; font-size:16px;" id="amount"></span></span>
+    </xblock>
+    <table class="layui-hide" id="test" lay-filter="demo"></table>
+
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="sale">出售</a>
+    </script>
+
+    <script id="createTime" type="text/html">
+        {{createTime(d.createTime)}}
+    </script>
+    <script id="setStatus" type="text/html">
+        {{setStatus(d.status)}}
+    </script>
+    <!--<div class="layui-tab-item">-->
+        <!--<div id="pageDemo"></div>-->
+    <!--</div>-->
+
+</div>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="public/js/public-admin.js" ></script>
+<script type="text/javascript" src="public/js/common.js" ></script>
+<script src="public/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+    function setStatus(v) {
+        if (v == 2)
+            return '在售';
+        else if(v == 1)
+            return '可售';
+        else
+            return null;
+    }
+
+    /**13位时间戳转换成 年月日 上午 时间  2018-05-23 10:41:08 */
+    function createTime(v){
+        return new Date(parseInt(v)).toLocaleString()
+    }
+    /**重写toLocaleString方法*/
+    Date.prototype.toLocaleString = function() {
+        var y = this.getFullYear();
+        var m = this.getMonth()+1;
+        m = m<10?'0'+m:m;
+        var d = this.getDate();
+        d = d<10?("0"+d):d;
+        var h = this.getHours();
+        h = h<10?("0"+h):h;
+        var M = this.getMinutes();
+        M = M<10?("0"+M):M;
+        var S=this.getSeconds();
+        S=S<10?("0"+S):S;
+        return y+"-"+m+"-"+d+" "+h+":"+M+":"+S;
+    };
+</script>
+</body>
+
+</html>
